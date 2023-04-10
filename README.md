@@ -1,5 +1,5 @@
-# Fedora RICE Scripts
-RICE scripts for configuring a Fedora desktop environment.
+# Ubuntu RICE Scripts
+RICE scripts for configuring a Ubuntu desktop environment.
 
 ## Overview
 This repo houses two components: an Ansible playbook and a command line utility.
@@ -16,9 +16,7 @@ local RICE repository, and add/remove ansible tags.
 
 ## Installation
 The installation process is expected to be run on a fresh installation of
-Fedora. I have tested this from a default Fedora Workstation ISO in Gnome, but
-it should in theory work from other spins or builds as well. Simply login to
-the system, start a terminal and run the following:
+Ubuntu. Simply login to the system, start a terminal and run the following:
 
 ``` sh
 curl https://raw.githubusercontent.com/calebstewart/rice/main/setup.sh | sh
