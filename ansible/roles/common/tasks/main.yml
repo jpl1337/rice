@@ -2,26 +2,22 @@
 # FIXME: Uncomment after done testing
 # - name: System Upgrade
 #   become: true
-#   ansible.builtin.dnf:
+#   ansible.builtin.apt:
 #     name: "*"
 #     state: latest # noqa package-latest
 - name: "Install System Tools"
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.apt:
     name:
-      - "neovim"
-      - "NetworkManager-tui"
-      - "glances"
-      - "zsh"
-      - "podman"
-      - "libvirt"
+      - neovim
+      - glances
+      - zsh
+      - gpg
+      - libvirt
+      - apt-transport-https
+
     state: present
-- name: "Enable Podman Socket"
-  ansible.builtin.systemd:
-    name: "podman.socket"
-    scope: user
-    enabled: true
-    state: started
+    update_cache: true
 - name: Install Oh-My-Zsh
   ansible.builtin.import_role:
     name: gantsign.oh-my-zsh
@@ -67,12 +63,6 @@
     src: /usr/bin/nvim
     dest: /usr/bin/vim
     state: link
-- name: Enable the RPM Fusion repository
-  become: true
-  ansible.builtin.dnf:
-    name: "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_major_version }}.noarch.rpm"
-    disable_gpg_check: true
-    state: present
 - name: Allow User Management of Virtual Machines
   become: true
   ansible.builtin.user:

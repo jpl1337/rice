@@ -1,7 +1,7 @@
 ---
 - name: "Install Looking Glass Build Dependencies"
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.apt:
     name:
       - cmake
       - gcc

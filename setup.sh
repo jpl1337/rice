@@ -29,8 +29,8 @@ fi
 [ -f "$CLONE_PATH" ] || [ -d "$CLONE_PATH" ] && fatal "git clone path already exists"
 
 # Install requirements for ansible install
-echo "[+] ${BOLD}SUDO${RESET} installing git and python packages with dnf"
-sudo dnf install -y git python3 python3-pip || fatal "failed to install git and python3"
+echo "[+] ${BOLD}SUDO${RESET} installing git and python packages with apt"
+sudo apt install -y git python3 python3-pip || fatal "failed to install git and python3"
 
 # Clone the rice repo
 echo "[+] cloning rice repository"

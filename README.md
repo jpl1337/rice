@@ -46,7 +46,7 @@ ricectl apply
 ```
 
 ## Updating (pulling changes)
-For system packages, the `ricectl apply` command will perform a full `dnf` upgrade.
+For system packages, the `ricectl apply` command will perform a full `apt` upgrade.
 You can update the `ricectl` command itself and the Ansible playbooks with the
 `ricectl sync` command.
 
