@@ -8,20 +8,21 @@
 - name: Add Brave Browser Repository
   become: true
   ansible.builtin.get_url:
-    url: "https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo"
+    url: "https://brave-browser-apt-release.s3.brave.com/brave-browser.repo"
     dest: /etc/yum.repos.d/brave-browser.repo
     mode: "0644"
     owner: root
     group: root
 - name: Import Brave Browser Public Key
   become: true
-  ansible.builtin.rpm_key:
+  ansible.builtin.apt_key:
     state: present
-    key: "https://brave-browser-rpm-release.s3.brave.com/brave-core.asc"
+    key: "https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg"
 - name: Install Desktop Packages
   become: true
-  ansible.builtin.dnf:
+  ansible.builtin.apt:
     name:
+      - firefox 
       - sway
       - swaylock
       - wofi
@@ -29,7 +30,6 @@
       - swayidle
       - grimshot
       - SwayNotificationCenter
-      - NetworkManager-tui
       - alacritty
       - gammastep
       - brightnessctl
@@ -40,35 +40,15 @@
       - fontawesome5-fonts
       - fontawesome5-free-fonts
       - brave-browser
+      - openvpn
     state: present
+    update_cache: true
 - name: Install Desktop Flatpaks
   community.general.flatpak:
     name:
       - org.signal.Signal
     method: user
     state: present
-- name: Check if Browserpass Native Exists
-  ansible.builtin.stat:
-    path: /usr/bin/browserpass-linux64
-  register: browserpass_result
-- name: Import Browserpass Native GPG Key
-  ansible.builtin.command: gpg --recv-keys 56C3E775E72B0C8B1C0C1BD0B5DB77409B11B601
-  when: not browserpass_result.stat.exists
-  register: pass_gpg
-  changed_when: pass_gpg.rc != 0
-  failed_when: pass_gpg.rc != 0
-- name: Download Browserpas Native
-  ansible.builtin.get_url:
-    url: https://github.com/browserpass/browserpass-native/releases/download/3.1.0/browserpass-linux64-3.1.0.tar.gz
-    dest: "/tmp/browserpass-linux64.tar.gz"
-    mode: "0600"
-  when: not browserpass_result.stat.exists
-- name: Download Browserpass Native Signature
-  ansible.builtin.get_url:
-    url: https://github.com/browserpass/browserpass-native/releases/download/3.1.0/browserpass-linux64-3.1.0.tar.gz.asc
-    dest: "/tmp/browserpass-linux64.tar.gz.asc"
-    mode: "0600"
-  when: not browserpass_result.stat.exists
 # NOTE: gpgv is not working properly :(
 # - name: Validate Browserpass Native Signature
 #   ansible.builtin.command: gpgv /tmp/browserpass-linux64.tar.gz.asc
@@ -94,6 +74,18 @@
   ansible.builtin.copy:
     src: files/config/
     dest: "{{ ansible_env.HOME }}/.config/"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: preserve
+- name: Add Bash Dotfiles
+  ansible.builtin.copy:
+    src: " {{ item.src }} "
+    dest: " {{ item.dst }} "
+    loop: 
+      - src: files/.bashrc
+        dst: "{{ ansible_env.HOME }}"
+      - src: files/.bash_aliases
+        dst: "{{ ansible_env.HOME }}"
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
     mode: preserve
