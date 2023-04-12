@@ -103,14 +103,14 @@
     daemon_reload: true
 - name: Download Desktop Wallpaper
   ansible.builtin.get_url:
-    url: https://wallpaperaccess.com/download/orange-polygon-692137
-    dest: "{{ ansible_env.HOME }}/Pictures/orange-polygon-material-wallpaper.png"
+    url: https://i.imgur.com/uuYI2Zj.jpeg
+    dest: "{{ ansible_env.HOME }}/Pictures/uuYI2Zj.jpeg"
     mode: "0644"
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
 - name: Link Current Wallpaper
   ansible.builtin.file:
-    src: "{{ ansible_env.HOME }}/Pictures/orange-polygon-material-wallpaper.png"
+    src: "{{ ansible_env.HOME }}/Pictures/uuYI2Zj.jpeg"
     dest: "{{ ansible_env.HOME }}/Pictures/desktop-background"
     owner: "{{ ansible_env.USER }}"
     group: "{{ ansible_env.USER }}"
@@ -119,3 +119,16 @@
 - name: Updating fontconfig cache
   ansible.builtin.command: fc-cache -f
   changed_when: true
+- name: Set OpenVPN default to all
+  become: true
+  replace:
+    path: /etc/default/openvpn 
+    regexp: '#AUTOSTART="all"'
+    replace: 'AUTOSTART="all"'
+- name: Download PIA Config files
+  become: true
+  ansible.builtin.unarchive:
+    remote_src: yes
+    src: https://www.privateinternetaccess.com/openvpn/openvpn-strong.zip
+    dest: /etc/openvpn/
+    include: us_florida.ovpn, us_atlanta.ovpn, us_houston.ovpn

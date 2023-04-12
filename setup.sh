@@ -30,8 +30,14 @@ fi
 
 # Install requirements for ansible install
 echo "[+] ${BOLD}SUDO${RESET} installing git and python packages with apt"
-sudo apt install -y git python3 python3-pip || fatal "failed to install git and python3"
-
+sudo apt install -y git python3 python3-venv python3-pip || fatal "failed to install git and python3"
+python_version=$(python3 --version | awk '{print $2}' | cut -d '.' -f 1-2)
+if [[ $python_version -ge 3.10 ]]; then
+  echo "[+] adding deadsnakes ppa"
+  sudo add-apt-repository ppa:deadsnakes/ppa -y || fatal "failed to add deadsnakes ppa"
+  sudo apt update || fatal failed to update
+  sudo apt install python3.10 -y || fatal "failed to upgrade to python3.10"
+fi
 # Clone the rice repo
 echo "[+] cloning rice repository"
 git clone https://github.com/calebstewart/rice.git "$CLONE_PATH" || fatal "failed to clone rice repository"
@@ -39,7 +45,7 @@ cd "$CLONE_PATH" || fatal "failed to enter rice directory"
 
 # Setup a virtual environment for ansible
 echo "[+] setting python virtual environment"
-python3 -m venv --system-site-packages --upgrade-deps env || fatal "failed to create virtual environment"
+python3.10 -m venv --system-site-packages --upgrade-deps env || python3 -m venv --system-site-packages env || fatal "failed to create virtual environment"
 
 # Install ansible in the virtual environment
 echo "[+] installing python requirements"

@@ -5,7 +5,7 @@ profile = "black"
 name = "ricectl"
 version = "0.1.0"
 description = "Rice configuration and installation manager"
-authors = ["Caleb Stewart <caleb.stewart94@gmail.com>"]
+authors = ["Caleb Stewart <caleb.stewart94@gmail.com>", "Radio <jeremypena1337@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 
